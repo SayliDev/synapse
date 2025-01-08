@@ -1,5 +1,5 @@
 import { BackgroundEffects } from "@/components/BackgroundEffects";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex h-screen bg-zinc-900 relative overflow-hidden">

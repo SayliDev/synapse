@@ -11,7 +11,12 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <MainLayout>
         <TabsSection />
-        <img src={logo} alt="Synapse AI Logo" className="mb-4" loading="lazy" />
+        <img
+          src={logo}
+          alt="Synapse AI Logo"
+          className="mb-0 sm:mb-4"
+          loading="lazy"
+        />
         <HeroSection />
         <CardsSection />
         <div className="fixed bottom-0 w-9/12 p-4">
