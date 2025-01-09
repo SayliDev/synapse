@@ -25,7 +25,7 @@ const MessageBar: React.FC = () => {
           Type your message
         </label>
         <Input
-          className="pl-14 pr-24 h-14 !text-lg bg-zinc-800 border-zinc-700 text-zinc-50 placeholder:text-zinc-400"
+          className="pl-14 pr-24 h-14  !text-base sm:!text-lg  bg-zinc-800 border-zinc-700 text-zinc-50 placeholder:text-zinc-400 placeholder:text-sm sm:placeholder:text-base"
           placeholder="Type your message..."
         />
 

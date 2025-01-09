@@ -40,13 +40,15 @@ const Sidebar = () => {
     white: "bg-white",
   };
 
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <motion.div
-      className="relative h-screen flex flex-col border-r border-zinc-800 bg-zinc-950"
+      className={`sm:relative h-screen flex flex-col border-r border-zinc-800 bg-zinc-950 fixed top-0 z-50 ${
+        isExpanded ? "-left-0" : "-left-16 sm:-left-0"
+      }`}
       animate={{
-        width: isExpanded ? 313.45 : 65,
+        width: isExpanded ? 313.45 : 62,
       }}
       transition={{
         type: "spring",
@@ -381,7 +383,7 @@ const Sidebar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-zinc-400 hover:text-zinc-100"
+            className="text-zinc-400 p-3 hover:text-zinc-100"
           >
             <Settings className="h-5 w-5" />
           </Button>
