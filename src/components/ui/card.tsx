@@ -8,7 +8,7 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ title, subtitle, description }) => {
   return (
-    <div className="flex-shrink-0 max-w-sm p-[2px] bg-gradient-to-r from-[#FF8E8E] to-[#9747FF] rounded-lg shadow-md transition hover:shadow-lg hover:shadow-[#FF8E8E]/50 cursor-pointer w-[270px]">
+    <div className="flex-shrink-0 max-w-sm p-[2px] bg-gradient-to-r from-[#FF8E8E] to-[#9747FF] rounded-lg shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg hover:shadow-[#FF8E8E]/50 cursor-pointer w-[258px]">
       <div className="bg-zinc-950 text-zinc-50 rounded-lg p-5 flex flex-col justify-between h-[170px]">
         <div className="flex justify-between w-full">
           <h2 className="text-2xl font-semibold leading-none">

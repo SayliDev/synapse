@@ -9,9 +9,9 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 const TabsSection = () => (
-  <div>
+  <div className="relative ">
     {/* Tabs bar mobile */}
-    <div className="sm:hidden translate-y-1/2  ">
+    <div className="sm:hidden -translate-y-[120px]">
       <Select defaultValue="sales">
         <SelectTrigger className="w-[130px]">
           <SelectValue placeholder="Select a model" />
