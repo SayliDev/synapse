@@ -1,7 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface ChatMessageProps {
   content: string;
@@ -9,6 +10,25 @@ interface ChatMessageProps {
 }
 
 const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
+  const [visibleWords, setVisibleWords] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (isAi) {
+      const words = content.split(" ");
+      let index = 0;
+
+      const interval = setInterval(() => {
+        if (index < words.length) {
+          setVisibleWords((prev) => [...prev, words[index]]);
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 30);
+      return () => clearInterval(interval);
+    }
+  }, [content, isAi]);
+
   return (
     <div
       className={`flex gap-4 items-start p-4 ${
@@ -34,7 +54,7 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
                     style={atomDark}
                     language={match[1]}
                     PreTag="div"
-                    className="rounded-md !my-4 "
+                    className="rounded-md !my-4"
                     showLineNumbers
                     {...props}
                   >
@@ -66,7 +86,7 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
               em: ({ children }) => <em className="italic">{children}</em>,
             }}
           >
-            {content.trim()}
+            {visibleWords.join(" ")}
           </ReactMarkdown>
         ) : (
           <p className="text-zinc-50">{content}</p>
