@@ -13,6 +13,9 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
   const [visibleWords, setVisibleWords] = useState<string[]>([]);
 
   useEffect(() => {
+    // Réinitialiser visibleWords quand un nouveau message arrive
+    setVisibleWords([]);
+
     if (isAi) {
       const words = content.split(" ");
       let index = 0;
@@ -25,14 +28,18 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
           clearInterval(interval);
         }
       }, 30);
+
       return () => clearInterval(interval);
+    } else {
+      // Pour les messages non-AI, afficher immédiatement tout le contenu
+      setVisibleWords(content.split(" "));
     }
-  }, [content, isAi]);
+  }, [content, isAi]); // Dépendances de l'effet
 
   return (
     <div
-      className={`flex gap-4 items-start p-4 ${
-        isAi ? "" : "flex-row-reverse text-right"
+      className={`flex gap-4 items-start p-4   ${
+        isAi ? "" : "flex-row-reverse text-right items-center"
       }`}
     >
       <Avatar>
