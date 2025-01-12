@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 const TabsSection = () => (
   <div className="relative ">
     {/* Tabs bar mobile */}
-    <div className="sm:hidden -translate-y-[120px]">
+    <div className="sm:hidden">
       <Select defaultValue="sales">
         <SelectTrigger className="w-[130px]">
           <SelectValue placeholder="Select a model" />

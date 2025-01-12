@@ -5,7 +5,7 @@ import logo from "@/assets/logo.svg";
 
 const ChatIntro = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full bg-[#141418] gap-16 relative">
+    <div className="flex flex-col items-center justify-center h-full w-full bg-[#141418] gap-16 relative">
       <TabsSection />
       <img src={logo} alt="Synapse AI Logo" className="h-24" loading="lazy" />
       <HeroSection />

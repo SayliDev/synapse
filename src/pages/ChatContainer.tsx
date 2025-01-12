@@ -1,3 +1,4 @@
+// ChatContainer.tsx
 import ChatIntro from "@/components/chat/ChatIntro";
 import ChatMessage from "@/components/chat/ChatMessage";
 import MessageBar from "@/components/MessageBar";
@@ -13,43 +14,20 @@ const ChatContainer = () => {
   const [showIntro, setShowIntro] = useState(true);
 
   const handleSendMessage = async (content: string) => {
-    // Cacher l'intro dès qu'un message est envoyé
     setShowIntro(false);
-
-    // Ajouter le message de l'utilisateur
     setMessages((prev) => [...prev, { content, isAi: false }]);
 
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
         {
-          content: `# Hello World
-This is some **bold text** and *italic text*.
+          content: `# Bonjour, 
+je suis votre assistant. Que puis-je faire pour vous ?
 
-- Item 1
-- Item 2
-- Item 3
-
-\`\`\`css
-:root {
-  font-family: Inter;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@layer base {
-  :root {
-    --radius: 0.5rem;
-  }
-}
-
-.custom-pre-bg pre {
-  background-color: transparent !important;
-}
-\`\`\``,
+Je peut faire :
+- Rechercher des informations sur un sujet
+- Rechercher des informations sur un sujet
+- Rechercher des informations sur un sujet`,
           isAi: true,
         },
       ]);
@@ -57,20 +35,30 @@ This is some **bold text** and *italic text*.
   };
 
   return (
-    <div className="flex flex-col h-full w-full sm:w-[62%]">
-      {showIntro ? (
-        <ChatIntro />
-      ) : (
-        messages.map((message, index) => (
-          <ChatMessage
-            key={index}
-            content={message.content}
-            isAi={message.isAi}
-          />
-        ))
-      )}
-      <div className="fixed bottom-0 left-0 w-screen p-4 pl-4 sm:pl-16">
-        <MessageBar onSendMessage={handleSendMessage} />
+    <div className="flex flex-col w-full h-full justify-between overflow-y-scroll pt-28 sm:pt-0">
+      {/* Wrapper pour centrer le contenu */}
+      <div
+        className={`lg:max-w-[70%] sm:max-w-[90%] max-w-[100%] mx-auto w-full pt-0 sm:pt-10  px-0  sm:px-6 ${
+          showIntro ? "" : "pb-28 "
+        }`}
+      >
+        {showIntro ? (
+          <ChatIntro />
+        ) : (
+          messages.map((message, index) => (
+            <ChatMessage
+              key={index}
+              content={message.content}
+              isAi={message.isAi}
+            />
+          ))
+        )}
+      </div>
+      {/* Barre de message fixe en bas */}
+      <div className="sticky bottom-0 w-full max-w-[90%]  sm:max-w-[70%] mx-auto bg-background/80 backdrop-blur-sm">
+        <div className="mx-auto py-4">
+          <MessageBar onSendMessage={handleSendMessage} />
+        </div>
       </div>
     </div>
   );
