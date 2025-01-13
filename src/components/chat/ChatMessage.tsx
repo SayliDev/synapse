@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkGfm from "remark-gfm";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import MessageActions from "./MessageActions";
 
 interface ChatMessageProps {
   content: string;
@@ -31,15 +33,15 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
 
       return () => clearInterval(interval);
     } else {
-      // Pour les messages non-AI, afficher immédiatement tout le contenu
+      // Pour les messages non-AI, affiche immédiatement tout le contenu
       setVisibleWords(content.split(" "));
     }
-  }, [content, isAi]); // Dépendances de l'effet
+  }, [content, isAi]);
 
   return (
     <div
-      className={`flex gap-4 items-start p-4   ${
-        isAi ? "" : "flex-row-reverse text-right items-center"
+      className={`flex gap-4 items-start p-4 ${
+        isAi ? "" : "flex-row-reverse text-right items-start"
       }`}
     >
       <Avatar>
@@ -53,6 +55,7 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
         {isAi ? (
           <ReactMarkdown
             className="custom-pre-bg"
+            remarkPlugins={[remarkGfm]}
             components={{
               code({ node, inline, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || "");
@@ -98,6 +101,7 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
         ) : (
           <p className="text-zinc-50">{content}</p>
         )}
+        <MessageActions isAi={isAi} />
       </div>
     </div>
   );
