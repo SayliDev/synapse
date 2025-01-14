@@ -3,7 +3,9 @@ import ChatMessage from "@/components/chat/ChatMessage";
 import MessageBar from "@/components/MessageBar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import STYLE_CONSTANTS from "@/lib/styleConstants";
+import { chatTransition } from "@/styles/animations/chatTransition";
 import { EnhancedMessage } from "@/types/chatType";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const ChatContainer = () => {
@@ -15,6 +17,7 @@ const ChatContainer = () => {
   /* -------------------------------------------------------------------------- */
   /*                      Fonction pour générer un message                      */
   /* -------------------------------------------------------------------------- */
+
   const createMessage = (content: string, isAi: boolean): EnhancedMessage => ({
     content,
     isAi,
@@ -82,33 +85,51 @@ const ChatContainer = () => {
           ref={messagesContainerRef}
           className={STYLE_CONSTANTS.messagesContainer}
         >
-          <div
-            className={`${STYLE_CONSTANTS.messageWrapper} ${
-              showIntro ? "" : "pb-32"
-            }`}
-          >
+          <AnimatePresence mode="wait">
             {showIntro ? (
-              <ChatIntro />
+              <motion.div
+                key="intro"
+                variants={chatTransition}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={STYLE_CONSTANTS.messageWrapper}
+              >
+                <ChatIntro />
+              </motion.div>
             ) : (
-              messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  content={message.content}
-                  isAi={message.isAi}
-                  containerRef={messagesContainerRef}
-                />
-              ))
+              <motion.div
+                key="chat"
+                variants={chatTransition}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={`${STYLE_CONSTANTS.messageWrapper} pb-32`}
+              >
+                {messages.map((message) => (
+                  <ChatMessage
+                    content={message.content}
+                    isAi={message.isAi}
+                    containerRef={messagesContainerRef}
+                  />
+                ))}
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         </div>
-        <div className={STYLE_CONSTANTS.messageBar}>
+        <motion.div
+          className={STYLE_CONSTANTS.messageBar}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
           <div className="mx-auto py-4">
             <MessageBar
               onSendMessage={handleSendMessage}
               isLoading={isLoading}
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </TooltipProvider>
   );

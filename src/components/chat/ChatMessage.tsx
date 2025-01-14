@@ -4,6 +4,7 @@ import { memo, useCallback, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import MarkdownRenderer from "../ui/MarkdownRenderer";
 import MessageActions from "./MessageActions";
+import { motion } from "framer-motion";
 
 const ChatMessage = ({ content, isAi, containerRef }: ChatMessageProps) => {
   const messageRef = useRef<HTMLDivElement>(null);
@@ -35,7 +36,11 @@ const ChatMessage = ({ content, isAi, containerRef }: ChatMessageProps) => {
   /* -------------------------------------------------------------------------- */
 
   return (
-    <div
+    <motion.div
+      key={content}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
       ref={messageRef}
       className={`flex gap-4 items-start p-4 ${
         isAi ? "" : "flex-row-reverse text-right items-start"
@@ -58,7 +63,7 @@ const ChatMessage = ({ content, isAi, containerRef }: ChatMessageProps) => {
         )}
         <MessageActions isAi={isAi} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
