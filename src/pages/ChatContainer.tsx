@@ -2,7 +2,7 @@ import ChatIntro from "@/components/chat/ChatIntro";
 import ChatMessage from "@/components/chat/ChatMessage";
 import MessageBar from "@/components/MessageBar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface Message {
   content: string;
@@ -67,29 +67,38 @@ function helloWorld() {
     }, 1000);
   };
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
   return (
     <TooltipProvider>
-      <div className="flex flex-col w-full h-full justify-between overflow-y-scroll pt-28 sm:pt-0">
-        {/* Wrapper pour centrer le contenu */}
+      <div className="flex flex-col w-full h-full justify-between overflow-hidden">
+        {/* Container avec défilement pour les messages */}
         <div
-          className={`lg:max-w-[70%] sm:max-w-[90%] max-w-[100%] mx-auto w-full pt-0 sm:pt-10  px-0  sm:px-6 ${
-            showIntro ? "" : "pb-28 "
-          }`}
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto pt-28 sm:pt-0"
         >
-          {showIntro ? (
-            <ChatIntro />
-          ) : (
-            messages.map((message, index) => (
-              <ChatMessage
-                key={index}
-                content={message.content}
-                isAi={message.isAi}
-              />
-            ))
-          )}
+          {/* Wrapper pour centrer le contenu */}
+          <div
+            className={`lg:max-w-[70%] sm:max-w-[90%] max-w-[100%] mx-auto w-full pt-0 sm:pt-10 px-0 sm:px-6 ${
+              showIntro ? "" : "pb-32"
+            }`}
+          >
+            {showIntro ? (
+              <ChatIntro />
+            ) : (
+              messages.map((message, index) => (
+                <ChatMessage
+                  key={index}
+                  content={message.content}
+                  isAi={message.isAi}
+                  containerRef={messagesContainerRef}
+                />
+              ))
+            )}
+          </div>
         </div>
         {/* Barre de message fixe en bas */}
-        <div className="sticky bottom-0 w-full max-w-[90%]  sm:max-w-[70%] mx-auto bg-background/80 backdrop-blur-sm">
+        <div className="sticky bottom-0 w-full max-w-[90%] sm:max-w-[70%] mx-auto bg-background/80 backdrop-blur-sm">
           <div className="mx-auto py-4">
             <MessageBar onSendMessage={handleSendMessage} />
           </div>

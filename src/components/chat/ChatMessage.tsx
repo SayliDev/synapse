@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -9,13 +9,32 @@ import MessageActions from "./MessageActions";
 interface ChatMessageProps {
   content: string;
   isAi: boolean;
+  containerRef: React.RefObject<HTMLDivElement>;
 }
 
-const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
+const ChatMessage = ({ content, isAi, containerRef }: ChatMessageProps) => {
   const [visibleWords, setVisibleWords] = useState<string[]>([]);
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = useCallback(() => {
+    if (containerRef.current && messageRef.current) {
+      const container = containerRef.current;
+      const messageElement = messageRef.current;
+
+      // Calcule la position de défilement nécessaire
+      const scrollPosition =
+        messageElement.offsetTop + messageElement.clientHeight;
+      const containerHeight = container.clientHeight;
+      const offset = 100; // Ajoute un offset pour compenser la barre de message
+
+      container.scrollTo({
+        top: scrollPosition - containerHeight + offset,
+        behavior: "smooth",
+      });
+    }
+  }, [containerRef]);
 
   useEffect(() => {
-    // Réinitialiser visibleWords quand un nouveau message arrive
     setVisibleWords([]);
 
     if (isAi) {
@@ -24,7 +43,11 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
 
       const interval = setInterval(() => {
         if (index < words.length) {
-          setVisibleWords((prev) => [...prev, words[index]]);
+          setVisibleWords((prev) => {
+            const newWords = [...prev, words[index]];
+            setTimeout(scrollToBottom, 0);
+            return newWords;
+          });
           index++;
         } else {
           clearInterval(interval);
@@ -33,13 +56,14 @@ const ChatMessage = ({ content, isAi }: ChatMessageProps) => {
 
       return () => clearInterval(interval);
     } else {
-      // Pour les messages non-AI, affiche immédiatement tout le contenu
       setVisibleWords(content.split(" "));
+      setTimeout(scrollToBottom, 0);
     }
-  }, [content, isAi]);
+  }, [content, isAi, scrollToBottom]);
 
   return (
     <div
+      ref={messageRef}
       className={`flex gap-4 items-start p-4 ${
         isAi ? "" : "flex-row-reverse text-right items-start"
       }`}
