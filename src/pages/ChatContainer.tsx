@@ -2,93 +2,97 @@ import ChatIntro from "@/components/chat/ChatIntro";
 import ChatMessage from "@/components/chat/ChatMessage";
 import MessageBar from "@/components/MessageBar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useRef, useState } from "react";
-
-interface Message {
-  content: string;
-  isAi: boolean;
-}
+import STYLE_CONSTANTS from "@/lib/styleConstants";
+import { EnhancedMessage } from "@/types/chatType";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const ChatContainer = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<EnhancedMessage[]>([]);
   const [showIntro, setShowIntro] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  const handleSendMessage = async (content: string) => {
-    setShowIntro(false);
-    setMessages((prev) => [...prev, { content, isAi: false }]);
+  /* -------------------------------------------------------------------------- */
+  /*                      Fonction pour générer un message                      */
+  /* -------------------------------------------------------------------------- */
+  const createMessage = (content: string, isAi: boolean): EnhancedMessage => ({
+    content,
+    isAi,
+    id: crypto.randomUUID(),
+    timestamp: new Date(),
+  });
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          content: `
-          
+  /* -------------------------------------------------------------------------- */
+  /*                      Gestion du scroll avec useEffect                      */
+  /* -------------------------------------------------------------------------- */
+
+  useEffect(() => {
+    if (messagesContainerRef.current && messages.length > 0) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  /* -------------------------------------------------------------------------- */
+  /*                  Gestion optimisée de l'envoi des messages                 */
+  /* -------------------------------------------------------------------------- */
+
+  const handleSendMessage = useCallback(async (content: string) => {
+    try {
+      setIsLoading(true);
+      setShowIntro(false);
+
+      // Ajout du message utilisateur
+      const userMessage = createMessage(content, false);
+      setMessages((prev) => [...prev, userMessage]);
+
+      // Simulation de réponse API
+      const aiResponse = await new Promise<string>((resolve) =>
+        setTimeout(() => {
+          resolve(`
+
 # Titre de Niveau 1
 
 ## Titre de Niveau 2
 
 ### Titre de Niveau 3
+          `);
+        }, 1000)
+      );
 
-**Texte en gras**  
-*Texte en italique*  
-~~Texte barré~~  
+      // Ajout de la réponse AI
+      const aiMessage = createMessage(aiResponse, true);
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message:", error);
+      // TODO ajouter notification d'erreur (toast)
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-> Ceci est une citation.  
-
-[Un lien vers OpenAI](https://www.openai.com)  
-![Une image descriptive](https://placehold.co/150)
-
-- Liste non ordonnée :
-  - Élément 1
-  - Élément 2
-    - Sous-élément
-
-1. Liste ordonnée :
-   1. Premier élément
-   2. Deuxième élément
-
-\`Du code inline\`
-
-\`\`\`javascript
-// Exemple de code en bloc
-function helloWorld() {
-  console.log("Hello, World!");
-}
-\`\`\`
-
-| Titre 1  | Titre 2     | Titre 3  |
-|----------|-------------|----------|
-| Cellule  | Une autre   | Encore   |
-| Contenu  | Exemple     | Plus     |
-`,
-          isAi: true,
-        },
-      ]);
-    }, 1000);
-  };
-
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  /* -------------------------------------------------------------------------- */
+  /*                                   Render                                   */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col w-full h-full justify-between overflow-hidden">
-        {/* Container avec défilement pour les messages */}
+      <div className={STYLE_CONSTANTS.container}>
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto pt-28 sm:pt-0"
+          className={STYLE_CONSTANTS.messagesContainer}
         >
-          {/* Wrapper pour centrer le contenu */}
           <div
-            className={`lg:max-w-[70%] sm:max-w-[90%] max-w-[100%] mx-auto w-full pt-0 sm:pt-10 px-0 sm:px-6 ${
+            className={`${STYLE_CONSTANTS.messageWrapper} ${
               showIntro ? "" : "pb-32"
             }`}
           >
             {showIntro ? (
               <ChatIntro />
             ) : (
-              messages.map((message, index) => (
+              messages.map((message) => (
                 <ChatMessage
-                  key={index}
+                  key={message.id}
                   content={message.content}
                   isAi={message.isAi}
                   containerRef={messagesContainerRef}
@@ -97,10 +101,12 @@ function helloWorld() {
             )}
           </div>
         </div>
-        {/* Barre de message fixe en bas */}
-        <div className="sticky bottom-0 w-full max-w-[90%] sm:max-w-[70%] mx-auto bg-background/80 backdrop-blur-sm">
+        <div className={STYLE_CONSTANTS.messageBar}>
           <div className="mx-auto py-4">
-            <MessageBar onSendMessage={handleSendMessage} />
+            <MessageBar
+              onSendMessage={handleSendMessage}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>

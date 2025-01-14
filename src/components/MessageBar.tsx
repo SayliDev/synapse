@@ -2,18 +2,9 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Mic, Paperclip, Send } from "lucide-react";
+import { ChatInputProps } from "@/types/chatType";
 
-interface ChatInputProps {
-  onSendMessage: (message: string) => void;
-}
-
-const MessageBar = ({ onSendMessage }: ChatInputProps) => {
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   console.log("Message sent!");
-  //   (e.currentTarget as HTMLFormElement).reset();
-  // };
-
+const MessageBar = ({ onSendMessage, isLoading }: ChatInputProps) => {
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,6 +14,10 @@ const MessageBar = ({ onSendMessage }: ChatInputProps) => {
       setMessage("");
     }
   };
+
+  if (isLoading) {
+    console.log("Loading...");
+  }
 
   return (
     <form onSubmit={handleSubmit}>
