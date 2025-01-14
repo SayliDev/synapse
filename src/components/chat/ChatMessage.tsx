@@ -81,11 +81,11 @@ const ChatMessage = ({ content, isAi, containerRef }: ChatMessageProps) => {
             className="custom-pre-bg"
             remarkPlugins={[remarkGfm]}
             components={{
-              code({ node, inline, className, children, ...props }) {
+              code({ inline, className, children, ...props }: any) {
                 const match = /language-(\w+)/.exec(className || "");
                 return !inline && match ? (
                   <SyntaxHighlighter
-                    style={atomDark}
+                    style={atomDark as any}
                     language={match[1]}
                     PreTag="div"
                     className="rounded-md !my-4"
