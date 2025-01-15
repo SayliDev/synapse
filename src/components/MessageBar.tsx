@@ -1,13 +1,23 @@
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Mic, Paperclip, Send } from "lucide-react";
+import { ChatInputProps } from "@/types/chatType";
 
-const MessageBar: React.FC = () => {
+const MessageBar = ({ onSendMessage, isLoading }: ChatInputProps) => {
+  const [message, setMessage] = useState("");
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Message sent!");
-    (e.currentTarget as HTMLFormElement).reset();
+    if (message.trim()) {
+      onSendMessage(message);
+      setMessage("");
+    }
   };
+
+  if (isLoading) {
+    console.log("Loading...");
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -25,6 +35,8 @@ const MessageBar: React.FC = () => {
           Type your message
         </label>
         <Input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           className="pl-14 pr-24 h-14  !text-base sm:!text-lg  bg-zinc-800 border-zinc-700 text-zinc-50 placeholder:text-zinc-400 placeholder:text-sm sm:placeholder:text-base"
           placeholder="Type your message..."
         />
