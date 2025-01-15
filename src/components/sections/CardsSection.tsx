@@ -1,5 +1,5 @@
 import { cards } from "@/data/cards";
-import Card from "../ui/card";
+import Card from "../ui/PromptCard";
 
 const CardsSection = () => (
   <div className="relative w-full max-w-[1200px] hidden md:block">
