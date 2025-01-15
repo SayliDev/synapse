@@ -15,8 +15,10 @@ import GoogleIcon from "@/assets/icons/GoogleIcon";
 import logo from "@/assets/logo.svg";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -151,6 +153,7 @@ const LoginPage = () => {
                 <Button
                   variant="link"
                   className="p-0 text-zinc-400 hover:text-white"
+                  onClick={() => navigate("/register")}
                 >
                   S'inscrire
                 </Button>
