@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import PageLayout from "@/layouts/PageLayout";
-import { FormData } from "@/types/authType";
+import { SignUpData } from "@/types/authType";
 import {
   Eye,
   EyeOff,
@@ -34,7 +34,6 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -52,7 +51,7 @@ const RegisterPage: React.FC = () => {
     },
   });
 
-  const validateForm = (data: FormData) => {
+  const validateForm = (data: SignUpData) => {
     // Validation du nom
     if (!data.fullName) {
       setFormError("Le nom complet est requis");
@@ -91,7 +90,7 @@ const RegisterPage: React.FC = () => {
     return true;
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: SignUpData) => {
     setFormError("");
     if (validateForm(data)) {
       // Simulation d'envoi du formulaire
@@ -143,20 +142,14 @@ const RegisterPage: React.FC = () => {
 
             <CardContent className="space-y-6">
               {formError && (
-                <motion.div
-                  animate={{ opacity: 1 }}
-                  initial={{ opacity: 0 }}
-                  exit={{ opacity: 0 }}
+                <Alert
+                  variant="destructive"
+                  className="bg-red-900/50 border-red-900 !text-zinc-300"
                 >
-                  <Alert
-                    variant="destructive"
-                    className="bg-red-900/50 border-red-900 !text-zinc-300"
-                  >
-                    <AlertDescription className="text-center">
-                      {formError}
-                    </AlertDescription>
-                  </Alert>
-                </motion.div>
+                  <AlertDescription className="text-center">
+                    {formError}
+                  </AlertDescription>
+                </Alert>
               )}
 
               <div className="grid grid-cols-2 gap-4">
