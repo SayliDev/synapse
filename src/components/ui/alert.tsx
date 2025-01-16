@@ -27,9 +27,10 @@ const Alert = React.forwardRef<
     VariantProps<typeof alertVariants>
 >(({ className, variant, ...props }, ref) => (
   <motion.div
-    animate={{ opacity: 1, y: 0 }}
-    initial={{ opacity: 0, y: 80 }}
-    exit={{ opacity: 0, y: -80 }}
+    animate={{ opacity: 1 }}
+    initial={{ opacity: 0 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.2, ease: "easeOut", delay: 0.2 }}
     ref={ref}
     role="alert"
     className={cn(alertVariants({ variant }), className)}
