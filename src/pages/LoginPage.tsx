@@ -16,13 +16,14 @@ import logo from "@/assets/logo.svg";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import PageLayout from "@/layouts/PageLayout";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <>
+    <PageLayout>
       <div className="min-h-screen w-full flex flex-col items-center justify-center gap-4 bg-zinc-950">
         <a
           href="#"
@@ -36,7 +37,6 @@ const LoginPage: React.FC = () => {
         {/* Wrapper pour la card et ses effets de lueur */}
         <div className="relative w-full max-w-md mx-4">
           {/* Effet de lueur avec dégradé */}
-
           <div
             className="absolute -inset-4 rounded-xl blur-3xl opacity-50"
             style={{
@@ -162,7 +162,7 @@ const LoginPage: React.FC = () => {
           </Card>
         </div>
       </div>
-    </>
+    </PageLayout>
   );
 };
 

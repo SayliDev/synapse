@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import PageLayout from "@/layouts/PageLayout";
 import { FormData } from "@/types/authType";
 import {
   Eye,
@@ -33,6 +34,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -98,7 +100,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <>
+    <PageLayout>
       <div className="min-h-screen w-full flex flex-col items-center justify-center gap-4 bg-zinc-950">
         <a
           href="#"
@@ -141,14 +143,20 @@ const RegisterPage: React.FC = () => {
 
             <CardContent className="space-y-6">
               {formError && (
-                <Alert
-                  variant="destructive"
-                  className="bg-red-900/50 border-red-900 !text-zinc-300"
+                <motion.div
+                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0 }}
+                  exit={{ opacity: 0 }}
                 >
-                  <AlertDescription className="text-center">
-                    {formError}
-                  </AlertDescription>
-                </Alert>
+                  <Alert
+                    variant="destructive"
+                    className="bg-red-900/50 border-red-900 !text-zinc-300"
+                  >
+                    <AlertDescription className="text-center">
+                      {formError}
+                    </AlertDescription>
+                  </Alert>
+                </motion.div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
@@ -349,7 +357,7 @@ const RegisterPage: React.FC = () => {
           Synapse AI. Vous pourrez vous désinscrire à tout moment.
         </p>
       </div>
-    </>
+    </PageLayout>
   );
 };
 
