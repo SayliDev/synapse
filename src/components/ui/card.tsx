@@ -1,30 +1,87 @@
-import { ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { HTMLMotionProps, motion } from "framer-motion";
+import * as React from "react";
 
-interface CardProps {
-  title: string;
-  subtitle: string;
-  description: string;
-}
+const Card = React.forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
+  ({ className, ...props }, ref) => (
+    <motion.div
+      ref={ref}
+      className={cn(
+        "rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50",
+        className
+      )}
+      layout
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      {...props}
+    />
+  )
+);
+Card.displayName = "Card";
 
-const Card: React.FC<CardProps> = ({ title, subtitle, description }) => {
-  return (
-    <div className="flex-shrink-0 max-w-sm p-[2px] bg-gradient-to-r from-[#FF8E8E] to-[#9747FF] rounded-lg shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg hover:shadow-[#FF8E8E]/50 cursor-pointer w-[258px]">
-      <div className="bg-zinc-950 text-zinc-50 rounded-lg p-5 flex flex-col justify-between h-[170px]">
-        <div className="flex justify-between w-full">
-          <h2 className="text-2xl font-semibold leading-none">
-            {title}
-            <span className="block mt-1">{subtitle}</span>
-          </h2>
-          <div>
-            <button className="flex items-center gap-2 p-1 border rounded-full border-zinc-50">
-              <ArrowUpRight size={23} />
-            </button>
-          </div>
-        </div>
-        <p className="text-xs text-zinc-50">{description}</p>
-      </div>
-    </div>
-  );
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+));
+CardHeader.displayName = "CardHeader";
+
+const CardTitle = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "text-2xl font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+));
+CardTitle.displayName = "CardTitle";
+
+const CardDescription = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("text-sm text-zinc-500 dark:text-zinc-400", className)}
+    {...props}
+  />
+));
+CardDescription.displayName = "CardDescription";
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+));
+CardContent.displayName = "CardContent";
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+));
+CardFooter.displayName = "CardFooter";
+
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 };
-
-export default Card;
