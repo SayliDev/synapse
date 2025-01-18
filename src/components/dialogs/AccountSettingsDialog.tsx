@@ -323,6 +323,7 @@ const AccountSettingsDialog = () => {
                 <TabsContent value="security" className="mt-6">
                   <Card className="bg-zinc-900 border-zinc-800">
                     <CardContent className="space-y-6 pt-6">
+                      {/* Two-Factor Authentication */}
                       <div className="flex justify-between items-center">
                         <div className="space-y-1">
                           <h3 className="text-sm font-medium text-zinc-100">
@@ -345,6 +346,7 @@ const AccountSettingsDialog = () => {
 
                       <Separator className="bg-zinc-800" />
 
+                      {/* Data Export */}
                       <div className="flex justify-between items-center">
                         <div className="space-y-1">
                           <h3 className="text-sm font-medium text-zinc-100">
@@ -361,6 +363,30 @@ const AccountSettingsDialog = () => {
                         >
                           <Download className="h-4 w-4 mr-2" />
                           Exporter
+                        </Button>
+                      </div>
+
+                      <Separator className="bg-zinc-800" />
+
+                      {/* Logout */}
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <h3 className="text-sm font-medium text-zinc-100">
+                            Déconnexion
+                          </h3>
+                          <p className="text-sm text-zinc-400">
+                            Se déconnecter de votre compte actuel
+                          </p>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="border-red-600 bg-red-600 text-white hover:bg-red-500"
+                          onClick={() => {
+                            console.log("Déconnecté !");
+                          }}
+                        >
+                          Déconnexion
                         </Button>
                       </div>
                     </CardContent>
