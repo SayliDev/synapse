@@ -76,6 +76,13 @@ const AccountSettingsDialog = () => {
     },
   };
 
+  const tabs = [
+    { value: "profile", icon: User, label: "Profil" },
+    { value: "billing", icon: CreditCard, label: "Abonnement" },
+    { value: "notifications", icon: Bell, label: "Notifications" },
+    { value: "security", icon: Shield, label: "Sécurité" },
+  ];
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -90,7 +97,7 @@ const AccountSettingsDialog = () => {
 
       <DialogContent className="sm:max-w-2xl bg-zinc-950 border-zinc-800 text-zinc-100">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+          <DialogTitle className="text-xl md:text-2xl font-bold flex flex-wrap items-center gap-2">
             Paramètres du compte
             <Badge
               variant="secondary"
@@ -101,43 +108,42 @@ const AccountSettingsDialog = () => {
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-4 gap-4 bg-zinc-900 p-1">
-            {[
-              { value: "profile", icon: User, label: "Profil" },
-              { value: "billing", icon: CreditCard, label: "Abonnement" },
-              { value: "notifications", icon: Bell, label: "Notifications" },
-              { value: "security", icon: Shield, label: "Sécurité" },
-            ].map(({ value, icon: Icon, label }) => (
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full mb-13 sm:mb-0"
+        >
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-2 bg-zinc-900 p-1">
+            {tabs.map(({ value, icon: Icon, label }) => (
               <TabsTrigger
+                key={value}
                 value={value}
-                className="data-[state=active]:bg-zinc-800"
+                className="data-[state=active]:bg-zinc-800 flex items-center justify-center gap-2 px-2 py-1.5"
               >
-                <Icon className="h-4 w-4 mr-2" />
-                {label}
+                <Icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{label}</span>
+                <span className="sm:hidden">{label.substring(0, 3)}</span>
               </TabsTrigger>
             ))}
           </TabsList>
 
           <AnimatePresence mode="sync">
-            {/* Profile Tab */}
             {activeTab === "profile" && (
               <motion.div
                 key="profile"
+                variants={tabContentVariants}
                 initial="enter"
                 animate="center"
                 exit="exit"
-                layout
-                variants={tabContentVariants}
                 transition={{ duration: 0.3 }}
               >
-                <TabsContent value="profile" className="mt-6 space-y-4">
-                  <div className="flex items-center gap-4 mb-6">
-                    <Avatar className="h-20 w-20">
+                <TabsContent value="profile" className="mt-4 md:mt-6 space-y-4">
+                  <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                    <Avatar className="h-16 w-16 md:h-20 md:w-20">
                       <AvatarImage src="https://github.com/shadcn.png" />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
-                    <div className="space-y-2">
+                    <div className="space-y-2 text-center sm:text-left">
                       <Button
                         variant="outline"
                         className="bg-zinc-900 border-zinc-700"
@@ -218,30 +224,31 @@ const AccountSettingsDialog = () => {
             {activeTab === "billing" && (
               <motion.div
                 key="billing"
+                variants={tabContentVariants}
                 initial="enter"
                 animate="center"
                 exit="exit"
-                layout
-                variants={tabContentVariants}
                 transition={{ duration: 0.3 }}
               >
-                <TabsContent value="billing" className="mt-6">
+                <TabsContent value="billing" className="mt-4 md:mt-6">
                   <Card className="bg-zinc-900 border-zinc-700">
                     <CardHeader>
-                      <CardTitle className="text-xl">Plan Premium</CardTitle>
+                      <CardTitle className="text-lg md:text-xl">
+                        Plan Premium
+                      </CardTitle>
                       <CardDescription>
                         Vous êtes actuellement sur le plan Premium
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <div>
+                      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div className="text-center sm:text-left">
                           <p className="font-medium">Premium mensuel</p>
                           <p className="text-sm text-zinc-400">
                             Facturé mensuellement
                           </p>
                         </div>
-                        <p className="text-2xl font-bold">19,99 €</p>
+                        <p className="text-xl md:text-2xl font-bold">19,99 €</p>
                       </div>
                       <Button className="w-full" variant="outline">
                         Gérer l'abonnement
@@ -396,9 +403,10 @@ const AccountSettingsDialog = () => {
             )}
           </AnimatePresence>
         </Tabs>
-
-        <DialogFooter>
-          <Button type="submit">Enregistrer les modifications</Button>
+        <DialogFooter className="mt-4 sm:mt-6">
+          <Button type="submit" className="w-full sm:w-auto">
+            Enregistrer les modifications
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
