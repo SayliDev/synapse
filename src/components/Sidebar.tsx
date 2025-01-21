@@ -1,14 +1,8 @@
 import logo from "@/assets/logo.png";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import {
-  Ellipsis,
-  Folder,
-  MessageSquare,
-  Plus,
-  Search,
-  Settings,
-} from "lucide-react";
+import { Ellipsis, Folder, MessageSquare, Plus, Search } from "lucide-react";
 import { useState } from "react";
+import AccountSettingsDialog from "./dialogs/AccountSettingsDialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
@@ -68,7 +62,6 @@ const Sidebar = () => {
       >
         <span className="w-5 h-full  absolute"></span>
       </motion.div>
-
       {/* Logo Section */}
       <div
         className={`flex items-center gap-3 mb-4 border-b border-zinc-800 ${
@@ -89,7 +82,6 @@ const Sidebar = () => {
           Synapse AI
         </motion.h1>
       </div>
-
       {/* New Chat Button */}
       <div className={`${isExpanded ? "p-4" : "px-2 py-4"}`}>
         <motion.div
@@ -123,7 +115,6 @@ const Sidebar = () => {
           </Button>
         </motion.div>
       </div>
-
       {/* Search Bar with AnimatePresence */}
       <div className={`${isExpanded ? "px-4 pb-4" : "px-2 pb-4"}`}>
         <AnimatePresence mode="wait">
@@ -158,7 +149,6 @@ const Sidebar = () => {
           )}
         </AnimatePresence>
       </div>
-
       {/* Categories and Recent Chats */}
       <ScrollArea className={`flex-1 ${isExpanded ? "px-4" : "px-2"}`}>
         <LayoutGroup>
@@ -335,7 +325,6 @@ const Sidebar = () => {
           </motion.div>
         </LayoutGroup>
       </ScrollArea>
-
       {/* User Profile */}
       <div
         className={` border-t border-zinc-800 ${isExpanded ? "p-4" : "p-2"}`}
@@ -380,13 +369,7 @@ const Sidebar = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-zinc-400 p-3 hover:text-zinc-100"
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
+          <AccountSettingsDialog />
         </div>
       </div>
     </motion.div>
