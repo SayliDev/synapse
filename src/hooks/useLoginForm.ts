@@ -1,16 +1,13 @@
+import { SignInData } from "@/types/authType";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 
-interface SignInData {
-  email: string;
-  password: string;
-}
-
 export const useLoginForm = () => {
   const [formError, setFormError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -37,6 +34,7 @@ export const useLoginForm = () => {
 
   const onSubmit = async (data: SignInData) => {
     setFormError("");
+    setIsLoading(true);
     if (validateForm(data)) {
       try {
         await login(data.email, data.password);
@@ -73,6 +71,8 @@ export const useLoginForm = () => {
               console.error("Erreur de connexion:", errorMessage);
           }
         }
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -90,6 +90,7 @@ export const useLoginForm = () => {
     form,
     formError,
     rememberMe,
+    isLoading,
     setRememberMe,
     onSubmit,
   };
