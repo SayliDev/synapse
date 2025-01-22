@@ -70,6 +70,7 @@ export const useRegisterForm = () => {
       await setDoc(doc(db, "users", userId), {
         fullName: data.fullName,
         email: data.email,
+        planType: "free",
         createdAt: new Date().toISOString(),
         lastLogin: new Date().toISOString(),
         settings: {
