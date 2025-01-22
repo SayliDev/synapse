@@ -1,4 +1,6 @@
 import logo from "@/assets/logo.png";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { getInitials } from "@/utils/utils";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { Ellipsis, Folder, MessageSquare, Plus, Search } from "lucide-react";
 import { useState } from "react";
@@ -6,8 +8,6 @@ import AccountSettingsDialog from "./dialogs/AccountSettingsDialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { getInitials } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 
 const Sidebar = () => {
