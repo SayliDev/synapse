@@ -2,7 +2,7 @@ import ChatIntro from "@/components/chat/ChatIntro";
 import ChatMessage from "@/components/chat/ChatMessage";
 import MessageBar from "@/components/MessageBar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import STYLE_CONSTANTS from "@/lib/styleConstants";
+import STYLE_CONSTANTS from "@/utils/styleConstants";
 import { chatTransition } from "@/styles/animations/chatTransition";
 import { EnhancedMessage } from "@/types/chatType";
 import { AnimatePresence, motion } from "framer-motion";

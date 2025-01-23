@@ -1,4 +1,6 @@
 import logo from "@/assets/logo.png";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { getInitials } from "@/utils/utils";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { Ellipsis, Folder, MessageSquare, Plus, Search } from "lucide-react";
 import { useState } from "react";
@@ -6,8 +8,12 @@ import AccountSettingsDialog from "./dialogs/AccountSettingsDialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
+import { Skeleton } from "./ui/skeleton";
 
 const Sidebar = () => {
+  const { profile, loading } = useUserProfile();
+  const [isExpanded, setIsExpanded] = useState(true);
+
   // Mock data for demonstration
   const categories = [
     { name: "Sales", count: 3, color: "white" },
@@ -33,8 +39,6 @@ const Sidebar = () => {
     orange: "bg-orange-300",
     white: "bg-white",
   };
-
-  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <motion.div
@@ -338,34 +342,43 @@ const Sidebar = () => {
             {isExpanded && (
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
-                animate={{
-                  width: "280px",
-                  opacity: 1,
-                }}
-                exit={{
-                  width: 0,
-                  opacity: 0,
-                }}
+                animate={{ width: "280px", opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
                 layout
                 className="flex items-center overflow-hidden"
               >
-                {/* Avatar */}
-                <div className="h-8 w-8 rounded-full bg-[#f1f1f1] mr-3 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-medium text-black">JD</span>
-                </div>
-
-                {/* Informations utilisateur */}
-                <motion.div
-                  className="flex flex-col min-w-[120px]"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <span className="text-sm font-medium text-zinc-100">
-                    John Doe
-                  </span>
-                  <span className="text-xs text-zinc-400">Premium Plan</span>
-                </motion.div>
+                {loading || !profile ? (
+                  <div className="flex items-center space-x-3">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="h-2 w-16" />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="h-8 w-8 rounded-full bg-[#f1f1f1] mr-3 flex items-center justify-center flex-shrink-0">
+                      <span className="text-sm font-medium text-black">
+                        {getInitials(profile.fullName)}
+                      </span>
+                    </div>
+                    <motion.div
+                      className="flex flex-col min-w-[120px]"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <span className="text-sm font-medium text-zinc-100">
+                        {profile.fullName}
+                      </span>
+                      <span className="text-xs text-zinc-400">
+                        {profile.planType === "premium"
+                          ? "Premium Plan"
+                          : "Free Plan"}
+                      </span>
+                    </motion.div>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

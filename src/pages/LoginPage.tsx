@@ -1,6 +1,7 @@
 import { AuthCard } from "@/components/auth/AuthCard";
 import { FormInput } from "@/components/auth/FormInput";
 import { SocialLogin } from "@/components/auth/SocialLogin";
+import LoadingButton from "@/components/LoadingButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { form, formError, rememberMe, setRememberMe, onSubmit } =
+  const { form, formError, isLoading, rememberMe, setRememberMe, onSubmit } =
     useLoginForm();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -124,12 +125,14 @@ const LoginPage: React.FC = () => {
                 </Button>
               </div>
 
-              <Button
+              <LoadingButton
                 type="submit"
+                isLoading={isLoading}
+                loadingText="Connexion en cours..."
                 className="w-full bg-white text-zinc-900 hover:bg-zinc-200"
               >
                 Se connecter
-              </Button>
+              </LoadingButton>
             </form>
           </Form>
 
