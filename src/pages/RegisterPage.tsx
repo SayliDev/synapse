@@ -1,6 +1,7 @@
 import AuthCard from "@/components/auth/AuthCard";
 import FormInput from "@/components/auth/FormInput";
 import SocialLogin from "@/components/auth/SocialLogin";
+import LoadingButton from "@/components/LoadingButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,7 +30,7 @@ import { useNavigate } from "react-router-dom";
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const { form, formError, onSubmit } = useRegisterForm();
+  const { form, formError, isLoading, onSubmit } = useRegisterForm();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -210,12 +211,14 @@ const RegisterPage: React.FC = () => {
                 )}
               />
 
-              <Button
+              <LoadingButton
                 type="submit"
+                isLoading={isLoading}
+                loadingText="Inscription en cours..."
                 className="w-full bg-white text-zinc-900 hover:bg-zinc-200"
               >
                 Créer un compte
-              </Button>
+              </LoadingButton>
             </form>
           </Form>
 
