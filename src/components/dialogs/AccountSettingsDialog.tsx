@@ -10,8 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSettingsTabs } from "@/hooks/useSettingsTabs";
+import { auth, db } from "@/lib/firebase";
 import { tabContentVariants } from "@/styles/animations/tabTransitions";
 import { ProfileFormData } from "@/types/settingsType";
+import { updateProfile } from "@firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 import { Settings } from "lucide-react";
 import { useState } from "react";
@@ -45,6 +48,37 @@ export const AccountSettingsDialog = () => {
         return <SecurityTab />;
       default:
         return null;
+    }
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   submit                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const onSubmit = async (data: ProfileFormData) => {
+    try {
+      const currentUser = auth.currentUser;
+
+      if (currentUser) {
+        // Met à jour le profil Firebase Auth
+        await updateProfile(currentUser, {
+          displayName: data.name,
+        });
+
+        const userDocRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userDocRef, {
+          fullName: data.name,
+          email: data.email,
+          settings: {
+            language: data.language,
+          },
+        });
+      }
+
+      console.log("Mise à jour du profil", data);
+    } catch (error) {
+      // Gérer les erreurs
+      console.error("Erreur de mise à jour du profil", error);
     }
   };
 
@@ -104,7 +138,11 @@ export const AccountSettingsDialog = () => {
         </Tabs>
 
         <DialogFooter className="mt-4 sm:mt-6">
-          <Button type="submit" className="w-full sm:w-auto">
+          <Button
+            type="submit"
+            className="w-full sm:w-auto"
+            onClick={form.handleSubmit(onSubmit)}
+          >
             Enregistrer les modifications
           </Button>
         </DialogFooter>
