@@ -59,7 +59,7 @@ const ProfileTab = ({ form }: ProfileTabProps) => {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
         <div className="h-16 w-16 rounded-full bg-[#f1f1f1] mr-3 flex items-center justify-center flex-shrink-0">
-          <span className="text-xl font-medium text-black">
+          <span className="text-2xl font-medium text-black">
             {profile ? getInitials(profile.fullName) : "??"}
           </span>
         </div>
