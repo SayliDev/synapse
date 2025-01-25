@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { UserProfile } from "@/types/userType";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 
@@ -11,31 +11,35 @@ export const useUserProfile = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) {
-        setProfile(null);
-        setLoading(false);
-        return;
-      }
+    if (!user) {
+      setProfile(null);
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
+    const userDocRef = doc(db, "users", user.uid);
 
-        if (userDoc.exists()) {
-          setProfile(userDoc.data() as UserProfile);
+    // Utilise onSnapshot pour un suivi en temps réel
+    const unsubscribe = onSnapshot(
+      userDocRef,
+      (doc) => {
+        if (doc.exists()) {
+          setProfile(doc.data() as UserProfile);
+          setLoading(false);
         } else {
           setError("Profil utilisateur non trouvé");
+          setLoading(false);
         }
-      } catch (err) {
+      },
+      (err) => {
         setError("Erreur lors de la récupération du profil");
         console.error("Erreur:", err);
-      } finally {
         setLoading(false);
       }
-    };
+    );
 
-    fetchUserProfile();
+    // Nettoie l'abonnement lors du démontage
+    return () => unsubscribe();
   }, [user]);
 
   return { profile, loading, error };
