@@ -23,10 +23,12 @@ import BillingTab from "./settings/BillingTab";
 import NotificationsTab from "./settings/NotificationsTab";
 import ProfileTab from "./settings/ProfileTab";
 import { SecurityTab } from "./settings/SecurityTab";
+import { useToast } from "@/hooks/use-toast";
 
 export const AccountSettingsDialog = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const tabs = useSettingsTabs();
+  const { toast } = useToast();
 
   const form = useForm<ProfileFormData>({
     defaultValues: {
@@ -74,11 +76,24 @@ export const AccountSettingsDialog = () => {
           },
         });
       }
+      const closeButton = document.querySelector(
+        "#dialog-close"
+      ) as HTMLButtonElement;
 
+      closeButton?.click();
       console.log("Mise à jour du profil", data);
+      toast({
+        title: "Profil mis à jour",
+        description: "Vos informations ont été enregistrées.",
+      });
     } catch (error) {
       // Gérer les erreurs
       console.error("Erreur de mise à jour du profil", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "La mise à jour du profil a échoué.",
+      });
     }
   };
 
