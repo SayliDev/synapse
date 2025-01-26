@@ -45,7 +45,7 @@ export const AccountSettingsDialog = () => {
       case "profile":
         return <ProfileTab form={form} />;
       case "billing":
-        return <BillingTab />;
+        return <BillingTab planType={profile?.planType} />;
       case "notifications":
         return <NotificationsTab />;
       case "security":
