@@ -15,19 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { ProfileFormData } from "@/types/settingsType";
+import { ProfileTabProps } from "@/types/userType";
 import { getInitials } from "@/utils/utils";
 import { useEffect } from "react";
-import { UseFormReturn } from "react-hook-form";
 
-type ProfileTabProps = {
-  form: UseFormReturn<ProfileFormData>;
-};
-
-const ProfileTab = ({ form }: ProfileTabProps) => {
-  const { profile, loading } = useUserProfile();
-
+const ProfileTab = ({ form, profile, loading }: ProfileTabProps) => {
   useEffect(() => {
     if (profile) {
       form.setValue("name", profile.fullName);

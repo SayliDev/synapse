@@ -9,18 +9,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
+import { useProfileUpdate } from "@/hooks/useProfileUpdate";
 import { useSettingsTabs } from "@/hooks/useSettingsTabs";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { auth, db } from "@/lib/firebase";
 import { tabContentVariants } from "@/styles/animations/tabTransitions";
 import { ProfileFormData } from "@/types/settingsType";
-import { updateProfile } from "@firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 import { Settings } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import LoadingSpinner from "../LoadingSpinner";
 import BillingTab from "./settings/BillingTab";
 import NotificationsTab from "./settings/NotificationsTab";
 import ProfileTab from "./settings/ProfileTab";
@@ -29,74 +27,26 @@ import { SecurityTab } from "./settings/SecurityTab";
 export const AccountSettingsDialog = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const tabs = useSettingsTabs();
-  const { toast } = useToast();
-  const { profile } = useUserProfile();
+  const { profile, loading } = useUserProfile();
+  const { handleProfileUpdate } = useProfileUpdate();
 
   const form = useForm<ProfileFormData>({
     defaultValues: {
-      name: "John Doe",
-      email: "john@example.com",
-      language: "fr",
+      name: profile?.fullName || "John Doe",
+      email: profile?.email || "john@example.com",
+      language: profile?.settings?.language || "fr",
     },
   });
 
   const renderTabContent = () => {
-    switch (activeTab) {
-      case "profile":
-        return <ProfileTab form={form} />;
-      case "billing":
-        return <BillingTab planType={profile?.planType} />;
-      case "notifications":
-        return <NotificationsTab />;
-      case "security":
-        return <SecurityTab />;
-      default:
-        return null;
-    }
-  };
+    const tabMap: { [key: string]: JSX.Element } = {
+      profile: <ProfileTab form={form} profile={profile} loading={loading} />,
+      billing: <BillingTab planType={profile?.planType} />,
+      notifications: <NotificationsTab />,
+      security: <SecurityTab />,
+    };
 
-  /* -------------------------------------------------------------------------- */
-  /*                                   submit                                   */
-  /* -------------------------------------------------------------------------- */
-
-  const onSubmit = async (data: ProfileFormData) => {
-    try {
-      const currentUser = auth.currentUser;
-
-      if (currentUser) {
-        // Met à jour le profil Firebase Auth
-        await updateProfile(currentUser, {
-          displayName: data.name,
-        });
-
-        const userDocRef = doc(db, "users", currentUser.uid);
-        await updateDoc(userDocRef, {
-          fullName: data.name,
-          email: data.email,
-          settings: {
-            language: data.language,
-          },
-        });
-      }
-      const closeButton = document.querySelector(
-        "#dialog-close"
-      ) as HTMLButtonElement;
-
-      closeButton?.click();
-      console.log("Mise à jour du profil", data);
-      toast({
-        title: "Profil mis à jour",
-        description: "Vos informations ont été enregistrées.",
-      });
-    } catch (error) {
-      // Gérer les erreurs
-      console.error("Erreur de mise à jour du profil", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "La mise à jour du profil a échoué.",
-      });
-    }
+    return tabMap[activeTab] || null;
   };
 
   return (
@@ -160,9 +110,33 @@ export const AccountSettingsDialog = () => {
           <Button
             type="submit"
             className="w-full sm:w-auto"
-            onClick={form.handleSubmit(onSubmit)}
+            onClick={form.handleSubmit((data) => handleProfileUpdate(data))}
           >
-            Enregistrer les modifications
+            <AnimatePresence mode="wait">
+              {loading || form.formState.isSubmitting ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.1 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <LoadingSpinner size="sm" text="" />
+                  <span>Enregistrer les modifications</span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="idle"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.1 }}
+                >
+                  Enregistrer les modifications
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Button>
         </DialogFooter>
       </DialogContent>
