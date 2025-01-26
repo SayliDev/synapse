@@ -9,7 +9,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 import { useSettingsTabs } from "@/hooks/useSettingsTabs";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { auth, db } from "@/lib/firebase";
 import { tabContentVariants } from "@/styles/animations/tabTransitions";
 import { ProfileFormData } from "@/types/settingsType";
@@ -23,12 +25,12 @@ import BillingTab from "./settings/BillingTab";
 import NotificationsTab from "./settings/NotificationsTab";
 import ProfileTab from "./settings/ProfileTab";
 import { SecurityTab } from "./settings/SecurityTab";
-import { useToast } from "@/hooks/use-toast";
 
 export const AccountSettingsDialog = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const tabs = useSettingsTabs();
   const { toast } = useToast();
+  const { profile } = useUserProfile();
 
   const form = useForm<ProfileFormData>({
     defaultValues: {
@@ -113,12 +115,14 @@ export const AccountSettingsDialog = () => {
         <DialogHeader>
           <DialogTitle className="text-xl md:text-2xl font-bold flex flex-wrap items-center gap-2">
             Paramètres du compte
-            <Badge
-              variant="secondary"
-              className="bg-gradient-to-r from-red-400 to-violet-600 text-zinc-900"
-            >
-              Premium
-            </Badge>
+            {profile?.planType === "premium" && (
+              <Badge
+                variant="secondary"
+                className="bg-gradient-to-r from-red-400 to-violet-600 text-zinc-900"
+              >
+                Premium
+              </Badge>
+            )}
           </DialogTitle>
         </DialogHeader>
 
