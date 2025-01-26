@@ -10,6 +10,7 @@ export const updateUserProfile = async (
   await updateProfile(currentUser, { displayName: data.name });
 
   const userDocRef = doc(db, "users", currentUser.uid);
+  // ! await updateEmail(currentUser, data.email);
   await updateDoc(userDocRef, {
     fullName: data.name,
     email: data.email,
