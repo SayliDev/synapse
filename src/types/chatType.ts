@@ -16,5 +16,5 @@ export interface ChatInputProps {
 
 export interface EnhancedMessage extends Message {
   id: string;
-  timestamp: Date;
+  timestamp: string;
 }
