@@ -9,13 +9,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useProfileUpdate } from "@/hooks/useProfileUpdate";
 import { useSettingsTabs } from "@/hooks/useSettingsTabs";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { tabContentVariants } from "@/styles/animations/tabTransitions";
 import { ProfileFormData } from "@/types/settingsType";
 import { AnimatePresence, motion } from "framer-motion";
 import { Settings } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import LoadingSpinner from "../LoadingSpinner";
 import BillingTab from "./settings/BillingTab";
 import NotificationsTab from "./settings/NotificationsTab";
 import ProfileTab from "./settings/ProfileTab";
@@ -24,28 +27,26 @@ import { SecurityTab } from "./settings/SecurityTab";
 export const AccountSettingsDialog = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const tabs = useSettingsTabs();
+  const { profile, loading } = useUserProfile();
+  const { handleProfileUpdate } = useProfileUpdate();
 
   const form = useForm<ProfileFormData>({
     defaultValues: {
-      name: "John Doe",
-      email: "john@example.com",
-      language: "fr",
+      name: profile?.fullName || "John Doe",
+      email: profile?.email || "john@example.com",
+      language: profile?.settings?.language || "fr",
     },
   });
 
   const renderTabContent = () => {
-    switch (activeTab) {
-      case "profile":
-        return <ProfileTab form={form} />;
-      case "billing":
-        return <BillingTab />;
-      case "notifications":
-        return <NotificationsTab />;
-      case "security":
-        return <SecurityTab />;
-      default:
-        return null;
-    }
+    const tabMap: { [key: string]: JSX.Element } = {
+      profile: <ProfileTab form={form} profile={profile} loading={loading} />,
+      billing: <BillingTab planType={profile?.planType} />,
+      notifications: <NotificationsTab />,
+      security: <SecurityTab />,
+    };
+
+    return tabMap[activeTab] || null;
   };
 
   return (
@@ -64,12 +65,14 @@ export const AccountSettingsDialog = () => {
         <DialogHeader>
           <DialogTitle className="text-xl md:text-2xl font-bold flex flex-wrap items-center gap-2">
             Paramètres du compte
-            <Badge
-              variant="secondary"
-              className="bg-gradient-to-r from-red-400 to-violet-600 text-zinc-900"
-            >
-              Premium
-            </Badge>
+            {profile?.planType === "premium" && (
+              <Badge
+                variant="secondary"
+                className="bg-gradient-to-r from-red-400 to-violet-600 text-zinc-900"
+              >
+                Premium
+              </Badge>
+            )}
           </DialogTitle>
         </DialogHeader>
 
@@ -104,8 +107,36 @@ export const AccountSettingsDialog = () => {
         </Tabs>
 
         <DialogFooter className="mt-4 sm:mt-6">
-          <Button type="submit" className="w-full sm:w-auto">
-            Enregistrer les modifications
+          <Button
+            type="submit"
+            className="w-full sm:w-auto"
+            onClick={form.handleSubmit((data) => handleProfileUpdate(data))}
+          >
+            <AnimatePresence mode="wait">
+              {loading || form.formState.isSubmitting ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.1 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <LoadingSpinner size="sm" text="" />
+                  <span>Enregistrer les modifications</span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="idle"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.1 }}
+                >
+                  Enregistrer les modifications
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Button>
         </DialogFooter>
       </DialogContent>

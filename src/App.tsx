@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { AnimatePresence } from "framer-motion";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -24,6 +25,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
           </Routes>
         </AnimatePresence>
+        <Toaster />
       </BrowserRouter>
     </ThemeProvider>
   );

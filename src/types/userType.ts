@@ -1,3 +1,6 @@
+import { UseFormReturn } from "react-hook-form";
+import { ProfileFormData } from "./settingsType";
+
 export interface UserProfile {
   fullName: string;
   email: string;
@@ -7,4 +10,10 @@ export interface UserProfile {
     notifications: boolean;
     language: string;
   };
+}
+
+export interface ProfileTabProps {
+  form: UseFormReturn<ProfileFormData>;
+  profile: UserProfile | null;
+  loading: boolean;
 }
