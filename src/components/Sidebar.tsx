@@ -9,10 +9,24 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { Skeleton } from "./ui/skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import { createChat, setActiveChat } from "@/store/slices/chatSlice";
+import { RootState } from "@/store";
 
 const Sidebar = () => {
   const { profile, loading } = useUserProfile();
   const [isExpanded, setIsExpanded] = useState(true);
+
+  const dispatch = useDispatch();
+  const { chats, activeChat } = useSelector((state: RootState) => state.chat);
+
+  const handleNewChat = () => {
+    dispatch(createChat());
+  };
+
+  const handleChatSelect = (chatId: string) => {
+    dispatch(setActiveChat(chatId));
+  };
 
   // Mock data for demonstration
   const categories = [
@@ -21,12 +35,12 @@ const Sidebar = () => {
     { name: "Negotiation", count: 2, color: "white" },
   ];
 
-  const recentChats = [
-    { id: 1, title: "Marketing Strategy Q4 2023 Presentation", date: "2h ago" },
-    { id: 2, title: "Sales Pitch Review session", date: "5h ago" },
-    { id: 3, title: "Email Campaign Ideas for Q1 2024", date: "1d ago" },
-    { id: 4, title: "The Future of Marketing as a Sales Tool", date: "1d ago" },
-  ];
+  // const recentChats = [
+  //   { id: 1, title: "Marketing Strategy Q4 2023 Presentation", date: "2h ago" },
+  //   { id: 2, title: "Sales Pitch Review session", date: "5h ago" },
+  //   { id: 3, title: "Email Campaign Ideas for Q1 2024", date: "1d ago" },
+  //   { id: 4, title: "The Future of Marketing as a Sales Tool", date: "1d ago" },
+  // ];
 
   const colorMap: Record<string, string> = {
     blue: "bg-blue-300",
@@ -102,6 +116,7 @@ const Sidebar = () => {
           <Button
             className="w-full justify-center"
             size={isExpanded ? "lg" : "icon"}
+            onClick={handleNewChat}
           >
             <Plus className={`h-4 w-4 ${isExpanded ? "" : "ml-4"}`} />
 
@@ -263,10 +278,11 @@ const Sidebar = () => {
 
             {/* Chats List */}
             <motion.div layout className="space-y-1">
-              {recentChats.map((chat) => (
+              {chats.map((chat) => (
                 <motion.div
                   layout
                   key={chat.id}
+                  onClick={() => handleChatSelect(chat.id)}
                   initial={false}
                   transition={{
                     layout: { duration: 0.3 },
@@ -277,7 +293,7 @@ const Sidebar = () => {
                     variant="ghost"
                     className={`w-full justify-start text-zinc-300 hover:bg-zinc-800 font-normal group ${
                       isExpanded ? "" : "!rounded-none"
-                    }`}
+                    } ${activeChat ? "" : ""}`}
                   >
                     <motion.div
                       layout
