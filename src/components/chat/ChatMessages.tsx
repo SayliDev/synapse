@@ -1,9 +1,9 @@
 import { chatTransition } from "@/styles/animations/chatTransition";
 import { ChatMessagesProps } from "@/types/chatType";
-import STYLE_CONSTANTS from "@/utils/styleConstants";
 import { AnimatePresence, motion } from "framer-motion";
 import ChatIntro from "./ChatIntro";
 import ChatMessage from "./ChatMessage";
+import { STYLE_CONSTANTS } from "@/utils/constants";
 
 export const ChatMessages = ({
   currentChat,

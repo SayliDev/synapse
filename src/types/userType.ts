@@ -17,3 +17,14 @@ export interface ProfileTabProps {
   profile: UserProfile | null;
   loading: boolean;
 }
+
+export interface ProfileType {
+  fullName: string;
+  email: string;
+  planType?: "free" | "premium";
+  settings?: {
+    theme: string;
+    notifications: boolean;
+    language: string;
+  };
+}

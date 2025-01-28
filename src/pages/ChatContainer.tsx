@@ -3,7 +3,7 @@ import MessageBar from "@/components/MessageBar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useChat } from "@/hooks/useChat";
 import { useScrollToBottom } from "@/hooks/useScrollToBottom";
-import STYLE_CONSTANTS from "@/utils/styleConstants";
+import { STYLE_CONSTANTS } from "@/utils/constants";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
