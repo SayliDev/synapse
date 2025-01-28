@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EnhancedMessage } from "../../types/chatType";
+import { EnhancedMessage } from "@/types/chatType";
 
 interface Chat {
   id: string;

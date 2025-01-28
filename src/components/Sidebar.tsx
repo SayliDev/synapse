@@ -26,6 +26,8 @@ const Sidebar = () => {
 
   const handleChatSelect = (chatId: string) => {
     dispatch(setActiveChat(chatId));
+    // log the selected chat
+    console.log("Selected chat:", chatId);
   };
 
   // Mock data for demonstration
@@ -293,7 +295,7 @@ const Sidebar = () => {
                     variant="ghost"
                     className={`w-full justify-start text-zinc-300 hover:bg-zinc-800 font-normal group ${
                       isExpanded ? "" : "!rounded-none"
-                    } ${activeChat ? "" : ""}`}
+                    } ${activeChat === chat.id ? " bg-zinc-800" : ""}`}
                   >
                     <motion.div
                       layout
@@ -319,7 +321,11 @@ const Sidebar = () => {
                               </span>
                               <div className="absolute inset-0 left-20">
                                 <div className="absolute inset-0 bg-gradient-to-l from-zinc-950 via-zinc-950/20 to-transparent" />
-                                <div className="absolute inset-0 bg-gradient-to-l from-zinc-800 via-zinc-800/70 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                                <div
+                                  className={`absolute inset-0 bg-gradient-to-l from-zinc-800 via-zinc-800/70 to-transparent opacity-0 transition-opacity group-hover:opacity-100 ${
+                                    activeChat === chat.id ? "opacity-100" : ""
+                                  }`}
+                                />
                               </div>
                             </motion.div>
                           )}
