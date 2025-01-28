@@ -1,17 +1,17 @@
 import logo from "@/assets/logo.png";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { RootState } from "@/store";
+import { createChat, setActiveChat } from "@/store/slices/chatSlice";
 import { getInitials } from "@/utils/utils";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { Ellipsis, Folder, MessageSquare, Plus, Search } from "lucide-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AccountSettingsDialog from "./dialogs/AccountSettingsDialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { Skeleton } from "./ui/skeleton";
-import { useDispatch, useSelector } from "react-redux";
-import { createChat, setActiveChat } from "@/store/slices/chatSlice";
-import { RootState } from "@/store";
 
 const Sidebar = () => {
   const { profile, loading } = useUserProfile();
@@ -262,22 +262,23 @@ const Sidebar = () => {
 
           {/* Recent Chats Section */}
           <motion.div layout className="space-y-2 mt-6">
-            <motion.div
-              layout
-              className="flex items-center justify-between text-sm text-white"
-              animate={{
-                height: isExpanded ? "auto" : 0,
-                opacity: isExpanded ? 1 : 0,
-                marginBottom: isExpanded ? "0.5rem" : 0,
-              }}
-              transition={{
-                layout: { duration: 0.3 },
-                opacity: { duration: 0.2 },
-              }}
-            >
-              <span>Recent Chats</span>
-            </motion.div>
-
+            {chats.length !== 0 && (
+              <motion.div
+                layout
+                className="flex items-center justify-between text-sm text-white"
+                animate={{
+                  height: isExpanded ? "auto" : 0,
+                  opacity: isExpanded ? 1 : 0,
+                  marginBottom: isExpanded ? "0.5rem" : 0,
+                }}
+                transition={{
+                  layout: { duration: 0.3 },
+                  opacity: { duration: 0.2 },
+                }}
+              >
+                <span>Recent Chats</span>
+              </motion.div>
+            )}
             {/* Chats List */}
             <motion.div layout className="space-y-1">
               {chats.map((chat) => (
@@ -347,6 +348,16 @@ const Sidebar = () => {
                   </Button>
                 </motion.div>
               ))}
+              {chats.length === 0 && (
+                <motion.div
+                  layout
+                  className={`flex items-center justify-center text-sm text-zinc-500 ${
+                    isExpanded ? "" : "hidden"
+                  } `}
+                >
+                  Aucun chat
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
         </LayoutGroup>
