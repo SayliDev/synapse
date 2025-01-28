@@ -3,9 +3,11 @@ import { addMessage, createChat } from "@/store/slices/chatSlice";
 import { Message } from "@/types/chatType";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useToast } from "./useToast";
 
 export const useChat = () => {
   const dispatch = useDispatch();
+  const { toast } = useToast();
   const activeChat = useSelector((state: RootState) => state.chat.activeChat);
   const currentChat = useSelector((state: RootState) =>
     state.chat.chats.find((chat) => chat.id === activeChat)
@@ -51,11 +53,20 @@ export const useChat = () => {
         dispatch(addMessage({ chatId: activeChat, message: aiMessage }));
       } catch (error) {
         console.error("Erreur lors de l'envoi du message:", error);
+
+        toast({
+          variant: "destructive",
+          title: "Erreur lors de l'envoi du message",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Veuillez essayer plus tard.",
+        });
       } finally {
         setIsLoading(false);
       }
     },
-    [activeChat, dispatch]
+    [activeChat, toast, dispatch]
   );
 
   return {
