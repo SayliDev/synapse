@@ -1,17 +1,95 @@
 import logo from "@/assets/logo.png";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { RootState } from "@/store";
-import { createChat, setActiveChat } from "@/store/slices/chatSlice";
+import {
+  createChat,
+  deleteChat,
+  setActiveChat,
+} from "@/store/slices/chatSlice";
 import { getInitials } from "@/utils/utils";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { Ellipsis, Folder, MessageSquare, Plus, Search } from "lucide-react";
+import {
+  Ellipsis,
+  Folder,
+  MessageSquare,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AccountSettingsDialog from "./dialogs/AccountSettingsDialog";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { Skeleton } from "./ui/skeleton";
+
+interface ChatActionsProps {
+  chatId: string;
+  onRename: (chatId: string) => void;
+  onDelete: (chatId: string) => void;
+  isExpanded: boolean;
+}
+
+const ChatActions = ({
+  chatId,
+  onRename,
+  onDelete,
+  isExpanded,
+}: ChatActionsProps) => {
+  return (
+    <AnimatePresence>
+      {isExpanded && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+            >
+              <Ellipsis className="!h-5 !w-5" />
+            </motion.div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="w-48 bg-zinc-900 border-zinc-800"
+          >
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onRename(chatId);
+              }}
+              className="flex items-center gap-2 text-zinc-300 focus:text-white focus:bg-zinc-800"
+            >
+              <Pencil className="h-4 w-4" />
+              Renommer
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-zinc-800" />
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(chatId);
+              }}
+              className="flex items-center gap-2 text-red-400 focus:text-red-300 focus:bg-zinc-800"
+            >
+              <Trash2 className="h-4 w-4" />
+              Supprimer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </AnimatePresence>
+  );
+};
 
 const Sidebar = () => {
   const { profile, loading } = useUserProfile();
@@ -26,11 +104,19 @@ const Sidebar = () => {
 
   const handleChatSelect = (chatId: string) => {
     dispatch(setActiveChat(chatId));
-    // log the selected chat
-    console.log("Selected chat:", chatId);
   };
 
-  // Mock data for demonstration
+  const handleRename = (chatId: string) => {
+    // TODO : Implementer la logique de renommage
+    console.log("Renommer chat:", chatId);
+  };
+
+  const handleDelete = (chatId: string) => {
+    dispatch(deleteChat(chatId));
+    console.log("Supprimer chat:", chatId);
+  };
+
+  // Mock data pour demonstration
   const categories = [
     { name: "Sales", count: 3, color: "white" },
     { name: "Marketing", count: 5, color: "white" },
@@ -334,14 +420,12 @@ const Sidebar = () => {
                       </motion.div>
                       <AnimatePresence>
                         {isExpanded && (
-                          <motion.span
-                            layout
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                          >
-                            <Ellipsis className="!h-5 !w-5" />
-                          </motion.span>
+                          <ChatActions
+                            chatId={chat.id}
+                            onRename={handleRename}
+                            onDelete={handleDelete}
+                            isExpanded={isExpanded}
+                          />
                         )}
                       </AnimatePresence>
                     </motion.div>
