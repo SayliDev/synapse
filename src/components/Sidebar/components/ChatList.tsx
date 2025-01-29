@@ -1,4 +1,6 @@
+import { RootState } from "@/store";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 import { ChatItem } from "./ChatItem";
 
 interface ChatListProps {
@@ -17,46 +19,55 @@ export const ChatList: React.FC<ChatListProps> = ({
   onChatSelect,
   onRename,
   onDelete,
-}) => (
-  <motion.div layout className="space-y-2 mt-6">
-    {/* Chat list header */}
-    {chats.length !== 0 && (
-      <motion.div
-        layout
-        className="flex items-center justify-between text-sm text-white"
-        animate={{
-          height: isExpanded ? "auto" : 0,
-          opacity: isExpanded ? 1 : 0,
-          marginBottom: isExpanded ? "0.5rem" : 0,
-        }}
-      >
-        <span>Recent Chats</span>
-      </motion.div>
-    )}
+}) => {
+  const searchQuery = useSelector((state: RootState) => state.chat.searchQuery);
 
-    {/* Chats */}
-    <motion.div layout className="space-y-1">
-      {chats.map((chat) => (
-        <ChatItem
-          key={chat.id}
-          chat={chat}
-          isActive={activeChat === chat.id}
-          isExpanded={isExpanded}
-          onSelect={() => onChatSelect(chat.id)}
-          onRename={() => onRename(chat.id)}
-          onDelete={() => onDelete(chat.id)}
-        />
-      ))}
-      {chats.length === 0 && (
+  // Filtre les chats selon la recherche
+  const filteredChats = chats.filter((chat) =>
+    chat.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <motion.div layout className="space-y-2 mt-6">
+      {/* Chat list header */}
+      {filteredChats.length !== 0 && (
         <motion.div
           layout
-          className={`flex items-center justify-center text-sm text-zinc-500 ${
-            isExpanded ? "" : "hidden"
-          }`}
+          className="flex items-center justify-between text-sm text-white"
+          animate={{
+            height: isExpanded ? "auto" : 0,
+            opacity: isExpanded ? 1 : 0,
+            marginBottom: isExpanded ? "0.5rem" : 0,
+          }}
         >
-          Aucun chat
+          <span>Recent Chats</span>
         </motion.div>
       )}
+
+      {/* Chats */}
+      <motion.div layout className="space-y-1">
+        {filteredChats.map((chat) => (
+          <ChatItem
+            key={chat.id}
+            chat={chat}
+            isActive={activeChat === chat.id}
+            isExpanded={isExpanded}
+            onSelect={() => onChatSelect(chat.id)}
+            onRename={() => onRename(chat.id)}
+            onDelete={() => onDelete(chat.id)}
+          />
+        ))}
+        {filteredChats.length === 0 && (
+          <motion.div
+            layout
+            className={`flex items-center justify-center text-sm text-zinc-500 ${
+              isExpanded ? "" : "hidden"
+            }`}
+          >
+            Aucun chat
+          </motion.div>
+        )}
+      </motion.div>
     </motion.div>
-  </motion.div>
-);
+  );
+};

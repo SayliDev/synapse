@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EnhancedMessage } from "@/types/chatType";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Chat {
   id: string;
@@ -11,11 +11,13 @@ interface Chat {
 interface ChatState {
   chats: Chat[];
   activeChat: string | null;
+  searchQuery: string;
 }
 
 const initialState: ChatState = {
   chats: [],
   activeChat: null,
+  searchQuery: "",
 };
 
 export const chatSlice = createSlice({
@@ -34,6 +36,9 @@ export const chatSlice = createSlice({
     },
     setActiveChat: (state, action: PayloadAction<string>) => {
       state.activeChat = action.payload;
+    },
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload;
     },
     addMessage: (
       state,
@@ -57,6 +62,11 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { createChat, setActiveChat, addMessage, deleteChat } =
-  chatSlice.actions;
+export const {
+  createChat,
+  setActiveChat,
+  setSearchQuery,
+  addMessage,
+  deleteChat,
+} = chatSlice.actions;
 export default chatSlice.reducer;
