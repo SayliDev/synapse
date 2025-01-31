@@ -1,22 +1,28 @@
-// src/store/slices/chatSlice.ts
 import { chatService } from "@/services/chatService";
 import { Chat, EnhancedMessage } from "@/types/chatType";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Thunks
-export const fetchChatsThunk = createAsyncThunk("chat/fetchChats", async () => {
-  return await chatService.fetchChats();
-});
+export const fetchChatsThunk = createAsyncThunk(
+  "chat/fetchChats",
+  async (userId: string) => {
+    return await chatService.fetchChats(userId);
+  }
+);
 
-export const createChatThunk = createAsyncThunk("chat/createChat", async () => {
-  const newChat = {
-    id: crypto.randomUUID(),
-    title: "New Chat",
-    messages: [],
-    createdAt: new Date().toISOString(),
-  };
-  return await chatService.createChat(newChat);
-});
+export const createChatThunk = createAsyncThunk(
+  "chat/createChat",
+  async (userId: string) => {
+    const newChat = {
+      id: crypto.randomUUID(),
+      userId,
+      title: "New Chat",
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+    return await chatService.createChat(newChat, userId);
+  }
+);
 
 export const addMessageThunk = createAsyncThunk(
   "chat/addMessage",

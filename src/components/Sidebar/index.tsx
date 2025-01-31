@@ -1,4 +1,5 @@
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/hooks/useAuth";
 import { useChat } from "@/hooks/useChat";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { AppDispatch, RootState } from "@/store";
@@ -24,6 +25,7 @@ export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   const { chats, activeChat } = useSelector((state: RootState) => state.chat);
   const dispatch = useDispatch<AppDispatch>();
+  const { user } = useAuth();
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
@@ -31,7 +33,7 @@ export const Sidebar = () => {
 
   const { handleDeleteChat } = useChat();
 
-  const handleNewChat = () => dispatch(createChatThunk());
+  const handleNewChat = () => dispatch(createChatThunk(user?.uid ?? ""));
   const handleChatSelect = (chatId: string) => dispatch(setActiveChat(chatId));
   const handleRename = (chatId: string) =>
     console.log("Renommer chat:", chatId);

@@ -8,6 +8,7 @@ import {
 import { EnhancedMessage } from "@/types/chatType";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "./useAuth";
 import { useToast } from "./useToast";
 
 export const useChat = () => {
@@ -20,6 +21,7 @@ export const useChat = () => {
     state.chat.chats.find((chat) => chat.id === activeChat)
   );
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
 
   // Création de message
   const createMessage = (content: string, isAi: boolean): EnhancedMessage => ({
@@ -39,8 +41,9 @@ export const useChat = () => {
         let targetChatId = activeChat;
 
         // Création d'une nouvelle conversation si nécessaire
+        if (!user) return;
         if (!targetChatId) {
-          const result = await dispatch(createChatThunk()).unwrap();
+          const result = await dispatch(createChatThunk(user.uid)).unwrap();
           targetChatId = result.id;
         }
 
@@ -84,7 +87,7 @@ export const useChat = () => {
         setIsLoading(false);
       }
     },
-    [activeChat, dispatch, toast]
+    [activeChat, user, dispatch, toast]
   );
 
   // Gestion de la suppression de chat
@@ -113,7 +116,8 @@ export const useChat = () => {
   const loadChats = useCallback(async () => {
     try {
       setIsLoading(true);
-      await dispatch(fetchChatsThunk()).unwrap();
+      if (!user) return;
+      await dispatch(fetchChatsThunk(user.uid)).unwrap();
     } catch (error) {
       console.error("Erreur de chargement:", error);
       toast({
@@ -124,7 +128,7 @@ export const useChat = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, toast]);
+  }, [user, dispatch, toast]);
 
   return {
     currentChat,

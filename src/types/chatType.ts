@@ -32,6 +32,7 @@ export interface EnhancedMessage extends Message {
 
 export interface Chat {
   id: string;
+  userId: string;
   title: string;
   messages: Message[];
 }
