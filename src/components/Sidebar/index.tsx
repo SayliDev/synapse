@@ -1,7 +1,7 @@
 import logo from "@/assets/logo.png";
 import { useChat } from "@/hooks/useChat";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { RootState } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import { createChatThunk, setActiveChat } from "@/store/slices/chatSlice";
 import { CATEGORIES } from "@/utils/constants";
 import { LayoutGroup, motion } from "framer-motion";
@@ -22,8 +22,8 @@ export const Sidebar = () => {
   /* -------------------------------------------------------------------------- */
   const { profile, loading } = useUserProfile();
   const [isExpanded, setIsExpanded] = useState(true);
-  const dispatch = useDispatch();
   const { chats, activeChat } = useSelector((state: RootState) => state.chat);
+  const dispatch = useDispatch<AppDispatch>();
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */

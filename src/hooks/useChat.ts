@@ -1,17 +1,17 @@
-import { useCallback, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import {
   addMessageThunk,
   createChatThunk,
   deleteChatThunk,
   fetchChatsThunk,
 } from "@/store/slices/chatSlice";
-import { useToast } from "./useToast";
 import { EnhancedMessage } from "@/types/chatType";
+import { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useToast } from "./useToast";
 
 export const useChat = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
   // Sélecteurs
@@ -58,7 +58,7 @@ export const useChat = () => {
           setTimeout(
             () =>
               resolve(
-                "# Titre de Niveau 1\n\n## Titre de Niveau 2\n\n### Titre de Niveau 3"
+                "  # Titre de Niveau 1\n\n## Titre de Niveau 2\n\n### Titre de Niveau 3"
               ),
             1000
           )

@@ -1,8 +1,8 @@
+import { ChatInputProps } from "@/types/chatType";
+import { Mic, Paperclip, Send } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Mic, Paperclip, Send } from "lucide-react";
-import { ChatInputProps } from "@/types/chatType";
 
 const MessageBar = ({ onSendMessage, isLoading }: ChatInputProps) => {
   const [message, setMessage] = useState("");

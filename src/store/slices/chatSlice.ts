@@ -1,7 +1,7 @@
 // src/store/slices/chatSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Chat, EnhancedMessage } from "@/types/chatType";
 import { chatService } from "@/services/chatService";
+import { Chat, EnhancedMessage } from "@/types/chatType";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Thunks
 export const fetchChatsThunk = createAsyncThunk("chat/fetchChats", async () => {

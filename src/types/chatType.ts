@@ -25,10 +25,13 @@ export interface ChatInputProps {
 
 export interface EnhancedMessage extends Message {
   id: string;
+  status: string;
+  annotations: string[];
   timestamp: string;
 }
 
 export interface Chat {
   id: string;
+  title: string;
   messages: Message[];
 }
