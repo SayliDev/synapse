@@ -1,72 +1,89 @@
-import { EnhancedMessage } from "@/types/chatType";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// src/store/slices/chatSlice.ts
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { Chat, EnhancedMessage } from "@/types/chatType";
+import { chatService } from "@/services/chatService";
 
-interface Chat {
-  id: string;
-  title: string;
-  messages: EnhancedMessage[];
-  createdAt: string;
-}
+// Thunks
+export const fetchChatsThunk = createAsyncThunk("chat/fetchChats", async () => {
+  return await chatService.fetchChats();
+});
 
-interface ChatState {
-  chats: Chat[];
+export const createChatThunk = createAsyncThunk("chat/createChat", async () => {
+  const newChat = {
+    id: crypto.randomUUID(),
+    title: "New Chat",
+    messages: [],
+    createdAt: new Date().toISOString(),
+  };
+  return await chatService.createChat(newChat);
+});
+
+export const addMessageThunk = createAsyncThunk(
+  "chat/addMessage",
+  async (payload: { chatId: string; message: EnhancedMessage }) => {
+    await chatService.addMessage(payload.chatId, payload.message);
+    return payload;
+  }
+);
+
+export const deleteChatThunk = createAsyncThunk(
+  "chat/deleteChat",
+  async (chatId: string) => {
+    await chatService.deleteChat(chatId);
+    return chatId;
+  }
+);
+
+// Initial state
+const initialState: {
   activeChat: string | null;
   searchQuery: string;
-}
-
-const initialState: ChatState = {
-  chats: [],
+  chats: Chat[];
+} = {
   activeChat: null,
   searchQuery: "",
+  chats: [],
 };
 
-export const chatSlice = createSlice({
+const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    createChat: (state) => {
-      const newChat: Chat = {
-        id: crypto.randomUUID(),
-        title: "New Chat",
-        messages: [],
-        createdAt: new Date().toISOString(),
-      };
-      state.chats.push(newChat);
-      state.activeChat = newChat.id;
-    },
     setActiveChat: (state, action: PayloadAction<string>) => {
       state.activeChat = action.payload;
     },
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
-    addMessage: (
-      state,
-      action: PayloadAction<{ chatId: string; message: EnhancedMessage }>
-    ) => {
-      const chat = state.chats.find((c) => c.id === action.payload.chatId);
-      if (chat) {
-        chat.messages.push(action.payload.message);
-        // Mise à jour du titre de la conversation basé sur le premier message de l'user si elle reste "New Chat"
-        if (chat.title === "New Chat" && !action.payload.message.isAi) {
-          chat.title = action.payload.message.content.slice(0, 30) + "...";
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchChatsThunk.fulfilled, (state, action) => {
+        state.chats = action.payload;
+      })
+      .addCase(createChatThunk.fulfilled, (state, action) => {
+        state.chats.unshift(action.payload);
+        state.activeChat = action.payload.id;
+      })
+      .addCase(addMessageThunk.fulfilled, (state, action) => {
+        const chat = state.chats.find((c) => c.id === action.payload.chatId);
+        if (chat) {
+          chat.messages.push(action.payload.message);
+          if (chat.title === "New Chat" && !action.payload.message.isAi) {
+            chat.title = action.payload.message.content.slice(0, 30) + "...";
+          }
         }
-      }
-    },
-    deleteChat: (state, action: PayloadAction<string>) => {
-      state.chats = state.chats.filter((chat) => chat.id !== action.payload);
-      if (state.activeChat === action.payload) {
-        state.activeChat = state.chats[0]?.id || null;
-      }
-    },
+      })
+      .addCase(deleteChatThunk.fulfilled, (state, action) => {
+        state.chats = state.chats.filter(
+          (chat: Chat) => chat.id !== action.payload
+        );
+        if (state.activeChat === action.payload) {
+          state.activeChat = state.chats[0]?.id || null;
+        }
+      });
   },
 });
 
-export const {
-  createChat,
-  setActiveChat,
-  setSearchQuery,
-  addMessage,
-  deleteChat,
-} = chatSlice.actions;
+export const { setActiveChat, setSearchQuery } = chatSlice.actions;
 export default chatSlice.reducer;

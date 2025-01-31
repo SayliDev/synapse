@@ -1,11 +1,8 @@
 import logo from "@/assets/logo.png";
+import { useChat } from "@/hooks/useChat";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { RootState } from "@/store";
-import {
-  createChat,
-  deleteChat,
-  setActiveChat,
-} from "@/store/slices/chatSlice";
+import { createChatThunk, setActiveChat } from "@/store/slices/chatSlice";
 import { CATEGORIES } from "@/utils/constants";
 import { LayoutGroup, motion } from "framer-motion";
 import { useState } from "react";
@@ -32,12 +29,14 @@ export const Sidebar = () => {
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  const handleNewChat = () => dispatch(createChat());
+  const { handleDeleteChat } = useChat();
+
+  const handleNewChat = () => dispatch(createChatThunk());
   const handleChatSelect = (chatId: string) => dispatch(setActiveChat(chatId));
   const handleRename = (chatId: string) =>
     console.log("Renommer chat:", chatId);
   const handleDelete = (chatId: string) => {
-    dispatch(deleteChat(chatId));
+    handleDeleteChat(chatId);
     console.log("Supprimer chat:", chatId);
   };
 

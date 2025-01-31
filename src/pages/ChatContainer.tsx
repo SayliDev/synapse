@@ -5,26 +5,13 @@ import { useChat } from "@/hooks/useChat";
 import { useScrollToBottom } from "@/hooks/useScrollToBottom";
 import { STYLE_CONSTANTS } from "@/utils/constants";
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 const ChatContainer = () => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const {
-    currentChat,
-    isLoading,
-    pendingMessage,
-    setPendingMessage,
-    handleSendMessage,
-  } = useChat();
+  const { currentChat, isLoading, handleSendMessage } = useChat();
 
   useScrollToBottom(messagesContainerRef, currentChat);
-
-  useEffect(() => {
-    if (pendingMessage) {
-      handleSendMessage(pendingMessage);
-      setPendingMessage(null);
-    }
-  }, [pendingMessage, handleSendMessage, setPendingMessage]);
 
   return (
     <TooltipProvider>
