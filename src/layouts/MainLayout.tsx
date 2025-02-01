@@ -1,5 +1,5 @@
 import { BackgroundEffects } from "@/components/BackgroundEffects";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/Sidebar/index";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex h-screen bg-zinc-900 relative">
