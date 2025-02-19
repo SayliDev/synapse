@@ -17,8 +17,6 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-    "skipLibCheck": true,
-    "skipLibCheck": true,
     "jsx": "react-jsx",
     
     /* Linting */
